@@ -33,9 +33,27 @@ This is your first blog post!
 
 export const initCommand = new Command('init')
   .description('Initialize a new blog project')
-  .option('-d, --directory <dir>', 'Target directory for the project', '.')
-  .action((options) => {
-    const targetDir = path.resolve(options.directory);
+  .argument('[projectName]', 'Name of the project directory to create')
+  .option('-d, --directory <dir>', 'Target directory for the project (overrides projectName)')
+  .action((projectName, options) => {
+    let targetDir: string;
+    
+    if (options.directory) {
+      // If directory option is provided, use it
+      targetDir = path.resolve(options.directory);
+    } else if (projectName) {
+      // If project name is provided, create a folder with that name
+      targetDir = path.resolve(projectName);
+    } else {
+      // Default to current directory
+      targetDir = path.resolve('.');
+    }
+    
+    // Create the target directory if it doesn't exist
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+      console.log(`Created project directory: ${path.basename(targetDir)}`);
+    }
     
     console.log(`Initializing new blog project in ${targetDir}...`);
     
@@ -79,8 +97,16 @@ export const initCommand = new Command('init')
     
     console.log('\n✅ Blog project initialized successfully!');
     console.log('\nNext steps:');
-    console.log('1. Edit blog.config.json to customize your blog');
-    console.log('2. Add more posts to content/posts/');
-    console.log('3. Run "alxblg build" to generate your blog');
-    console.log('4. Run "alxblg serve" to start the development server');
+    if (projectName && !options.directory) {
+      console.log(`1. Navigate to your project: cd ${projectName}`);
+      console.log('2. Edit blog.config.json to customize your blog');
+      console.log('3. Add more posts to content/posts/');
+      console.log('4. Run "alxblg build" to generate your blog');
+      console.log('5. Run "alxblg serve" to start the development server');
+    } else {
+      console.log('1. Edit blog.config.json to customize your blog');
+      console.log('2. Add more posts to content/posts/');
+      console.log('3. Run "alxblg build" to generate your blog');
+      console.log('4. Run "alxblg serve" to start the development server');
+    }
   });
