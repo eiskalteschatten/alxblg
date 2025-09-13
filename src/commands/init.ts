@@ -2,6 +2,35 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 
+function copyDefaultPost(targetPath: string): void {
+  const defaultPostPath = path.join(__dirname, '..', 'templates', 'welcome.md');
+  if (fs.existsSync(defaultPostPath)) {
+    let postContent = fs.readFileSync(defaultPostPath, 'utf8');
+    // Replace the date placeholder with current date
+    const currentDate = new Date().toISOString().split('T')[0];
+    postContent = postContent.replace('{{DATE}}', currentDate);
+    
+    fs.writeFileSync(targetPath, postContent);
+    console.log('Created sample post: content/posts/welcome.md');
+  } 
+  else {
+    console.warn('Warning: Default post template not found, creating basic post');
+    // Fallback to basic post if template is missing
+    const fallbackPost = `---
+title: "Welcome to Your New Blog"
+date: "${new Date().toISOString().split('T')[0]}"
+slug: "welcome"
+---
+
+# Welcome to Your New Blog
+
+This is your first blog post!
+`;
+    fs.writeFileSync(targetPath, fallbackPost);
+    console.log('Created sample post: content/posts/welcome.md');
+  }
+}
+
 export const initCommand = new Command('init')
   .description('Initialize a new blog project')
   .option('-d, --directory <dir>', 'Target directory for the project', '.')
@@ -45,26 +74,7 @@ export const initCommand = new Command('init')
     // Create sample post
     const samplePostPath = path.join(targetDir, 'content/posts/welcome.md');
     if (!fs.existsSync(samplePostPath)) {
-      const samplePost = `---
-title: "Welcome to Your New Blog"
-date: "${new Date().toISOString().split('T')[0]}"
-slug: "welcome"
----
-
-# Welcome to Your New Blog
-
-This is your first blog post! You can edit this file and add more posts to the \`content/posts\` directory.
-
-## Getting Started
-
-1. Edit \`blog.config.json\` to customize your blog
-2. Add more posts to \`content/posts\`
-3. Run \`alxblg build\` to generate your blog
-4. Run \`alxblg serve\` to start the development server
-`;
-      
-      fs.writeFileSync(samplePostPath, samplePost);
-      console.log('Created sample post: content/posts/welcome.md');
+      copyDefaultPost(samplePostPath);
     }
     
     console.log('\n✅ Blog project initialized successfully!');
