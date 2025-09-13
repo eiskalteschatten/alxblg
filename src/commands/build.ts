@@ -2,9 +2,22 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as nunjucks from 'nunjucks';
-import * as marked from 'marked';
+import { Marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
+import { default as hljs } from 'highlight.js';
 
 import { BlogConfig, BlogPost } from '@/interfaces/blog';
+
+const marked = new Marked(
+  markedHighlight({
+	emptyLangClass: 'hljs',
+    langPrefix: 'hljs language-',
+    highlight(code, lang, info) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language }).value;
+    }
+  })
+);
 
 function copyTemplateIfNotExists(templateName: string, sourceDir: string, templatesDir: string): void {
   const templatePath = path.join(templatesDir, templateName);
