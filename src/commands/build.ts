@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as nunjucks from 'nunjucks';
+import * as marked from 'marked';
 
 import { BlogConfig, BlogPost } from '@/interfaces/blog';
 
@@ -24,7 +25,7 @@ export const buildCommand = new Command('build')
   .description('Build the static blog site')
   .option('-s, --source <dir>', 'Source directory', '.')
   .option('-o, --output <dir>', 'Output directory', 'public')
-  .action((options) => {
+  .action(async (options) => {
     const sourceDir = path.resolve(options.source);
     const outputDir = path.resolve(options.output);
     
@@ -69,7 +70,7 @@ export const buildCommand = new Command('build')
             title: '',
             date: '',
             slug: '',
-            content: postContent,
+            content: await marked.parse(postContent),
           };
           
           // Parse frontmatter fields
@@ -139,7 +140,7 @@ function copyDirectory(src: string, dest: string): void {
   }
   
   const files = fs.readdirSync(src);
-  
+
   for (const file of files) {
     const srcPath = path.join(src, file);
     const destPath = path.join(dest, file);
