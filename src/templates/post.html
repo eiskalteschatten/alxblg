@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ post.title }} - {{ config.title }}{% endblock %}
+
+{% block content %}
+    <article>
+        <h1>{{ post.title }}</h1>
+        <div class="post-meta">{{ post.date }}</div>
+        <div class="post-content">
+            {{ post.content | safe }}
+        </div>
+    </article>
+    
+    <nav style="margin-top: 40px;">
+        <a href="/">&larr; Back to all posts</a>
+    </nav>
+{% endblock %}

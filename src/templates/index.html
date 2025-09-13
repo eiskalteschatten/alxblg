@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {% for post in posts %}
+        <article class="post">
+            <h2><a href="/posts/{{ post.slug }}.html">{{ post.title }}</a></h2>
+            <div class="post-meta">{{ post.date }}</div>
+            <p>{{ post.excerpt }}</p>
+        </article>
+    {% endfor %}
+{% endblock %}

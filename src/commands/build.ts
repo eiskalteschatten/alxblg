@@ -19,6 +19,21 @@ interface Post {
   excerpt?: string;
 }
 
+function copyTemplateIfNotExists(templateName: string, sourceDir: string, templatesDir: string): void {
+  const templatePath = path.join(templatesDir, templateName);
+  if (!fs.existsSync(templatePath)) {
+    // Look for default template in the CLI package's templates directory
+    const defaultTemplatePath = path.join(__dirname, '..', 'templates', templateName);
+    if (fs.existsSync(defaultTemplatePath)) {
+      fs.copyFileSync(defaultTemplatePath, templatePath);
+      console.log(`Created template: templates/${templateName}`);
+    } 
+    else {
+      console.warn(`Warning: Default template ${templateName} not found at ${defaultTemplatePath}`);
+    }
+  }
+}
+
 export const buildCommand = new Command('build')
   .description('Build the static blog site')
   .option('-s, --source <dir>', 'Source directory', '.')
@@ -95,77 +110,10 @@ export const buildCommand = new Command('build')
       fs.mkdirSync(templatesDir, { recursive: true });
     }
     
-    const layoutTemplate = path.join(templatesDir, 'layout.html');
-    if (!fs.existsSync(layoutTemplate)) {
-      const defaultLayout = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ config.title }}{% endblock %}</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 40px; }
-        .post { margin-bottom: 40px; }
-        .post-meta { color: #666; font-size: 14px; }
-        pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1><a href="/" style="text-decoration: none; color: inherit;">{{ config.title }}</a></h1>
-        <p>{{ config.description }}</p>
-    </header>
-    
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-    
-    <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666;">
-        <p>&copy; {{ config.author }}</p>
-    </footer>
-</body>
-</html>`;
-      fs.writeFileSync(layoutTemplate, defaultLayout);
-    }
-    
-    const indexTemplate = path.join(templatesDir, 'index.html');
-    if (!fs.existsSync(indexTemplate)) {
-      const defaultIndex = `{% extends "layout.html" %}
-
-{% block content %}
-    {% for post in posts %}
-        <article class="post">
-            <h2><a href="/posts/{{ post.slug }}.html">{{ post.title }}</a></h2>
-            <div class="post-meta">{{ post.date }}</div>
-            <p>{{ post.excerpt }}</p>
-        </article>
-    {% endfor %}
-{% endblock %}`;
-      fs.writeFileSync(indexTemplate, defaultIndex);
-    }
-    
-    const postTemplate = path.join(templatesDir, 'post.html');
-    if (!fs.existsSync(postTemplate)) {
-      const defaultPost = `{% extends "layout.html" %}
-
-{% block title %}{{ post.title }} - {{ config.title }}{% endblock %}
-
-{% block content %}
-    <article>
-        <h1>{{ post.title }}</h1>
-        <div class="post-meta">{{ post.date }}</div>
-        <div class="post-content">
-            {{ post.content | safe }}
-        </div>
-    </article>
-    
-    <nav style="margin-top: 40px;">
-        <a href="/">&larr; Back to all posts</a>
-    </nav>
-{% endblock %}`;
-      fs.writeFileSync(postTemplate, defaultPost);
-    }
+    // Copy default templates from src/templates if they don't exist
+    copyTemplateIfNotExists('layout.html', sourceDir, templatesDir);
+    copyTemplateIfNotExists('index.html', sourceDir, templatesDir);
+    copyTemplateIfNotExists('post.html', sourceDir, templatesDir);
     
     // Generate index page
     const indexHtml = nunjucks.render('index.html', { config, posts });

@@ -7,7 +7,8 @@
     "alxblg": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-templates",
+    "copy-templates": "cp -r src/templates dist/",
     "dev": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
