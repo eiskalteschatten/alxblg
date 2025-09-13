@@ -1,10 +1,16 @@
 {
   "name": "alxblg",
   "version": "0.1.0",
-  "description": "",
+  "description": "A simple blog generator CLI",
   "main": "dist/index.js",
+  "bin": {
+    "alxblg": "./dist/index.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,6 +29,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "commander": "^14.0.1",
     "express": "^5.1.0",
     "nunjucks": "^3.2.4"
   }
