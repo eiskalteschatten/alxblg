@@ -1,0 +1,29 @@
+{
+  "name": "alxblg",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eiskalteschatten/alxblg.git"
+  },
+  "author": "Alex Seifert <alex@alexseifert.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eiskalteschatten/alxblg/issues"
+  },
+  "homepage": "https://github.com/eiskalteschatten/alxblg#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.18.3",
+    "@types/nunjucks": "^3.2.6",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "nunjucks": "^3.2.4"
+  }
+}
