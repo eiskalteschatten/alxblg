@@ -60,6 +60,7 @@ export const buildCommand = new Command('build')
         
         // Parse frontmatter (simple implementation)
         const frontmatterMatch = content.match(/^---\n(.*?)\n---\n(.*)/s);
+        
         if (frontmatterMatch) {
           const frontmatter = frontmatterMatch[1];
           const postContent = frontmatterMatch[2];
@@ -73,6 +74,7 @@ export const buildCommand = new Command('build')
           
           // Parse frontmatter fields
           const lines = frontmatter.split('\n');
+
           for (const line of lines) {
             const match = line.match(/^(\w+):\s*"?([^"]*)"?$/);
             if (match) {
@@ -92,6 +94,7 @@ export const buildCommand = new Command('build')
     
     // Create default templates if they don't exist
     const templatesDir = path.join(sourceDir, 'templates');
+
     if (!fs.existsSync(templatesDir)) {
       fs.mkdirSync(templatesDir, { recursive: true });
     }
@@ -107,6 +110,7 @@ export const buildCommand = new Command('build')
     
     // Generate individual post pages
     const postsOutputDir = path.join(outputDir, 'posts');
+
     if (!fs.existsSync(postsOutputDir)) {
       fs.mkdirSync(postsOutputDir, { recursive: true });
     }
@@ -119,6 +123,7 @@ export const buildCommand = new Command('build')
     // Copy assets if they exist
     const assetsDir = path.join(sourceDir, 'assets');
     const outputAssetsDir = path.join(outputDir, 'assets');
+
     if (fs.existsSync(assetsDir)) {
       copyDirectory(assetsDir, outputAssetsDir);
     }
@@ -134,13 +139,15 @@ function copyDirectory(src: string, dest: string): void {
   }
   
   const files = fs.readdirSync(src);
+  
   for (const file of files) {
     const srcPath = path.join(src, file);
     const destPath = path.join(dest, file);
     
     if (fs.statSync(srcPath).isDirectory()) {
       copyDirectory(srcPath, destPath);
-    } else {
+    } 
+    else {
       fs.copyFileSync(srcPath, destPath);
     }
   }
