@@ -2,6 +2,8 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { BlogConfig } from '@/interfaces/blog';
+
 function copyDefaultPost(targetPath: string): void {
   const defaultPostPath = path.join(__dirname, '..', '..', 'templates', 'welcome.md');
   if (fs.existsSync(defaultPostPath)) {
@@ -41,10 +43,12 @@ export const initCommand = new Command('init')
     if (options.directory) {
       // If directory option is provided, use it
       targetDir = path.resolve(options.directory);
-    } else if (projectName) {
+    } 
+    else if (projectName) {
       // If project name is provided, create a folder with that name
       targetDir = path.resolve(projectName);
-    } else {
+    } 
+    else {
       // Default to current directory
       targetDir = path.resolve('.');
     }
@@ -77,7 +81,7 @@ export const initCommand = new Command('init')
     // Create basic config file
     const configPath = path.join(targetDir, 'blog.config.json');
     if (!fs.existsSync(configPath)) {
-      const defaultConfig = {
+      const defaultConfig: BlogConfig = {
         title: 'My Blog',
         description: 'A simple blog generated with alxblg',
         author: 'Your Name',
@@ -97,13 +101,15 @@ export const initCommand = new Command('init')
     
     console.log('\n✅ Blog project initialized successfully!');
     console.log('\nNext steps:');
+
     if (projectName && !options.directory) {
       console.log(`1. Navigate to your project: cd ${projectName}`);
       console.log('2. Edit blog.config.json to customize your blog');
       console.log('3. Add more posts to content/posts/');
       console.log('4. Run "alxblg build" to generate your blog');
       console.log('5. Run "alxblg serve" to start the development server');
-    } else {
+    } 
+    else {
       console.log('1. Edit blog.config.json to customize your blog');
       console.log('2. Add more posts to content/posts/');
       console.log('3. Run "alxblg build" to generate your blog');

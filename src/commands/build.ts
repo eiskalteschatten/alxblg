@@ -3,21 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as nunjucks from 'nunjucks';
 
-interface BlogConfig {
-  title: string;
-  description: string;
-  author: string;
-  baseUrl: string;
-  postsPerPage: number;
-}
-
-interface Post {
-  title: string;
-  date: string;
-  slug: string;
-  content: string;
-  excerpt?: string;
-}
+import { BlogConfig, BlogPost } from '@/interfaces/blog';
 
 function copyTemplateIfNotExists(templateName: string, sourceDir: string, templatesDir: string): void {
   const templatePath = path.join(templatesDir, templateName);
@@ -63,7 +49,7 @@ export const buildCommand = new Command('build')
     
     // Load and parse posts
     const postsDir = path.join(sourceDir, 'content/posts');
-    const posts: Post[] = [];
+    const posts: BlogPost[] = [];
     
     if (fs.existsSync(postsDir)) {
       const postFiles = fs.readdirSync(postsDir).filter(file => file.endsWith('.md'));
@@ -78,7 +64,7 @@ export const buildCommand = new Command('build')
           const frontmatter = frontmatterMatch[1];
           const postContent = frontmatterMatch[2];
           
-          const post: Post = {
+          const post: BlogPost = {
             title: '',
             date: '',
             slug: '',
