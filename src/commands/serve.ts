@@ -25,11 +25,12 @@ export const serveCommand = new Command('serve')
     app.use(express.static(serveDir));
     
     // Handle SPA routing - serve index.html for unknown routes
-    app.get('*', (req, res) => {
+    app.get('/{*page}', (req, res) => {
       const indexPath = path.join(serveDir, 'index.html');
       if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
-      } else {
+      } 
+      else {
         res.status(404).send('404 - Not Found');
       }
     });
