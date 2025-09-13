@@ -23,7 +23,7 @@ function copyTemplateIfNotExists(templateName: string, sourceDir: string, templa
   const templatePath = path.join(templatesDir, templateName);
   if (!fs.existsSync(templatePath)) {
     // Look for default template in the CLI package's templates directory
-    const defaultTemplatePath = path.join(__dirname, '..', 'templates', templateName);
+    const defaultTemplatePath = path.join(__dirname, '..', '..', 'templates', templateName);
     if (fs.existsSync(defaultTemplatePath)) {
       fs.copyFileSync(defaultTemplatePath, templatePath);
       console.log(`Created template: templates/${templateName}`);

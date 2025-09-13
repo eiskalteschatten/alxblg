@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 function copyDefaultPost(targetPath: string): void {
-  const defaultPostPath = path.join(__dirname, '..', 'templates', 'welcome.md');
+  const defaultPostPath = path.join(__dirname, '..', '..', 'templates', 'welcome.md');
   if (fs.existsSync(defaultPostPath)) {
     let postContent = fs.readFileSync(defaultPostPath, 'utf8');
     // Replace the date placeholder with current date
